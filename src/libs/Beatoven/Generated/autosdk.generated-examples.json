@@ -1,0 +1,15 @@
+{
+  "Examples": [
+    {
+      "Order": 1,
+      "Title": "Compose a new AI music track",
+      "Slug": "composetrack",
+      "Description": "Starts an asynchronous composition task from a natural-language prompt.\nReturns a task ID that can be polled via \u0060GET /api/v1/tasks/{task_id}\u0060\nuntil \u0060status\u0060 becomes \u0060composed\u0060.",
+      "Language": "csharp",
+      "Code": "using var client = new BeatovenClient(apiKey);\n\nvar request = global::System.Text.Json.JsonSerializer.Deserialize\u003Cglobal::Beatoven.ComposeTrackRequest\u003E(\n    @\u0022{\n  \u0022\u0022prompt\u0022\u0022: {\n    \u0022\u0022text\u0022\u0022: \u0022\u002230 seconds peaceful lo-fi chill hop track\u0022\u0022\n  },\n  \u0022\u0022format\u0022\u0022: \u0022\u0022wav\u0022\u0022,\n  \u0022\u0022looping\u0022\u0022: false\n}\u0022)!;\n\nvar response = await client.Tracks.ComposeTrackAsync(\n    request: request\n);",
+      "Format": "sdk",
+      "OperationId": "composeTrack",
+      "Setup": "This example assumes \u0060using Beatoven;\u0060 is in scope and \u0060apiKey\u0060 contains the required credential."
+    }
+  ]
+}

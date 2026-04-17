@@ -1,0 +1,262 @@
+openapi: 3.0.3
+info:
+  title: Beatoven.ai Public API
+  version: "1.0"
+  description: |
+    Beatoven.ai Track Composition API.
+    Mood-aware AI music generation for video and other media.
+
+    Hand-written OpenAPI spec derived from
+    https://github.com/Beatoven/public-api (docs/api-spec.md).
+  contact:
+    name: Beatoven.ai Support
+    email: hello@beatoven.ai
+    url: https://www.beatoven.ai
+servers:
+  - url: https://public-api.beatoven.ai
+    description: Production
+security:
+  - bearerAuth: []
+tags:
+  - name: tracks
+    description: Compose AI music tracks from a text prompt.
+  - name: tasks
+    description: Poll status of an asynchronous composition task.
+
+paths:
+  /api/v1/tracks/compose:
+    post:
+      tags:
+        - tracks
+      operationId: composeTrack
+      summary: Compose a new AI music track
+      description: |
+        Starts an asynchronous composition task from a natural-language prompt.
+        Returns a task ID that can be polled via `GET /api/v1/tasks/{task_id}`
+        until `status` becomes `composed`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ComposeTrackRequest"
+      responses:
+        "200":
+          description: Composition task accepted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ComposeTrackResponse"
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/tasks/{task_id}:
+    get:
+      tags:
+        - tasks
+      operationId: getTaskStatus
+      summary: Get composition task status
+      description: |
+        Returns the current status of a composition task.
+        When `status` is `composed`, the response includes download URLs
+        for the full track and individual stems.
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: Task ID returned from `composeTrack`.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Current task status and (when completed) track + stems URLs.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskStatusResponse"
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Task not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: |
+        Beatoven.ai API token, sent as `Authorization: Bearer <token>`.
+        Obtain a key at https://sync.beatoven.ai/apiDashboard.
+
+  schemas:
+    ComposeTrackPrompt:
+      type: object
+      description: Natural-language prompt describing the desired track.
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          description: Freeform prompt, e.g. `30 seconds peaceful lo-fi chill hop track`.
+          example: 30 seconds peaceful lo-fi chill hop track
+
+    ComposeTrackFormat:
+      type: string
+      description: Output audio format for the composed track and stems.
+      enum:
+        - wav
+        - mp3
+        - aac
+      default: wav
+
+    ComposeTrackRequest:
+      type: object
+      required:
+        - prompt
+      properties:
+        prompt:
+          $ref: "#/components/schemas/ComposeTrackPrompt"
+        format:
+          $ref: "#/components/schemas/ComposeTrackFormat"
+        looping:
+          type: boolean
+          description: Set `true` for a higher amount of looping. Default `false`.
+          default: false
+      example:
+        prompt:
+          text: 30 seconds peaceful lo-fi chill hop track
+        format: wav
+        looping: false
+
+    ComposeTrackStatus:
+      type: string
+      description: Initial composition task status.
+      enum:
+        - started
+
+    ComposeTrackResponse:
+      type: object
+      required:
+        - status
+        - task_id
+      properties:
+        status:
+          $ref: "#/components/schemas/ComposeTrackStatus"
+        task_id:
+          type: string
+          description: Unique task ID. Poll via `GET /api/v1/tasks/{task_id}`.
+          example: ccb84650-7b4a-4d00-9f80-8a6427ca21aa_1
+
+    TaskStatus:
+      type: string
+      description: |
+        Task lifecycle state.
+          - `composing`: queued
+          - `running`: in progress
+          - `composed`: finished, assets available
+          - `failed`: composition failed
+      enum:
+        - composing
+        - running
+        - composed
+        - failed
+
+    TaskStemsUrls:
+      type: object
+      description: Signed download URLs for individual stems of the composed track.
+      properties:
+        bass:
+          type: string
+          format: uri
+          description: URL for the bass stem.
+        chords:
+          type: string
+          format: uri
+          description: URL for the chords stem.
+        melody:
+          type: string
+          format: uri
+          description: URL for the melody stem.
+        percussion:
+          type: string
+          format: uri
+          description: URL for the percussion stem.
+
+    TaskMeta:
+      type: object
+      description: Metadata about the composed track (present when `status` is `composed`).
+      properties:
+        project_id:
+          type: string
+          description: Beatoven project UUID.
+        track_id:
+          type: string
+          description: Beatoven track UUID.
+        prompt:
+          $ref: "#/components/schemas/ComposeTrackPrompt"
+        version:
+          type: integer
+          description: Track version number.
+        track_url:
+          type: string
+          format: uri
+          description: Signed URL to download the full mixed track.
+        stems_url:
+          $ref: "#/components/schemas/TaskStemsUrls"
+
+    TaskStatusResponse:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          $ref: "#/components/schemas/TaskStatus"
+        meta:
+          $ref: "#/components/schemas/TaskMeta"
+
+    ErrorResponse:
+      type: object
+      description: Generic error envelope returned on 4xx/5xx responses.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        detail:
+          type: string
+          description: Additional detail when available.

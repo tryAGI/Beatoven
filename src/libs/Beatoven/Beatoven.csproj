@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <NoWarn>$(NoWarn);CS3002;CS3003;CS1591;CA1822</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Nuget">
+    <Description>C# SDK based on Beatoven.ai Track Composition API. Mood-aware AI music generation for video scoring.</Description>
+    <PackageTags>api;client;sdk;dotnet;openapi;beatoven;ai;music-generation;mood-aware;video-scoring</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.AI" Version="10.4.1" />
+  </ItemGroup>
+
+</Project>
