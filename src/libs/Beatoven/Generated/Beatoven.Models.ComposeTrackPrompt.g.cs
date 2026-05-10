@@ -45,5 +45,6 @@ namespace Beatoven
         public ComposeTrackPrompt()
         {
         }
+
     }
 }
