@@ -52,5 +52,6 @@ namespace Beatoven
         public ErrorResponse()
         {
         }
+
     }
 }
