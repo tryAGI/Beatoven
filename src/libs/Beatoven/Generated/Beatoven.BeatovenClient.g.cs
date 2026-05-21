@@ -46,7 +46,7 @@ namespace Beatoven
         /// <summary>
         /// Poll status of an asynchronous composition task.
         /// </summary>
-        public TasksClient Tasks => new TasksClient(HttpClient, authorizations: Authorizations, options: Options)
+        public TasksClient Tasks => new TasksClient(HttpClient, baseUri: null, authorizations: Authorizations, options: Options)
         {
             ReadResponseAsString = ReadResponseAsString,
             JsonSerializerContext = JsonSerializerContext,
@@ -55,7 +55,7 @@ namespace Beatoven
         /// <summary>
         /// Compose AI music tracks from a text prompt.
         /// </summary>
-        public TracksClient Tracks => new TracksClient(HttpClient, authorizations: Authorizations, options: Options)
+        public TracksClient Tracks => new TracksClient(HttpClient, baseUri: null, authorizations: Authorizations, options: Options)
         {
             ReadResponseAsString = ReadResponseAsString,
             JsonSerializerContext = JsonSerializerContext,
@@ -84,6 +84,27 @@ namespace Beatoven
         }
 
         /// <summary>
+        /// Creates a new instance of the BeatovenClient with explicit options but no base URL override.
+        /// Skips passing <c>baseUri</c> so the default base URL from the OpenAPI spec applies.
+        /// </summary>
+        /// <param name="httpClient">The HttpClient instance. If not provided, a new one will be created.</param>
+        /// <param name="authorizations">The authorizations to use for the requests.</param>
+        /// <param name="options">Client-wide request defaults such as headers, query parameters, retries, and timeout.</param>
+        /// <param name="disposeHttpClient">Dispose the HttpClient when the instance is disposed. True by default.</param>
+        public BeatovenClient(
+            global::System.Net.Http.HttpClient? httpClient,
+            global::System.Collections.Generic.List<global::Beatoven.EndPointAuthorization>? authorizations,
+            global::Beatoven.AutoSDKClientOptions? options,
+            bool disposeHttpClient = true) : this(
+                httpClient,
+                baseUri: null,
+                authorizations,
+                options,
+                disposeHttpClient: disposeHttpClient)
+        {
+        }
+
+        /// <summary>
         /// Creates a new instance of the BeatovenClient.
         /// If no httpClient is provided, a new one will be created.
         /// If no baseUri is provided, the default baseUri from OpenAPI spec will be used.
@@ -94,10 +115,10 @@ namespace Beatoven
         /// <param name="options">Client-wide request defaults such as headers, query parameters, retries, and timeout.</param>
         /// <param name="disposeHttpClient">Dispose the HttpClient when the instance is disposed. True by default.</param>
         public BeatovenClient(
-            global::System.Net.Http.HttpClient? httpClient = null,
-            global::System.Uri? baseUri = null,
-            global::System.Collections.Generic.List<global::Beatoven.EndPointAuthorization>? authorizations = null,
-            global::Beatoven.AutoSDKClientOptions? options = null,
+            global::System.Net.Http.HttpClient? httpClient,
+            global::System.Uri? baseUri,
+            global::System.Collections.Generic.List<global::Beatoven.EndPointAuthorization>? authorizations,
+            global::Beatoven.AutoSDKClientOptions? options,
             bool disposeHttpClient = true)
         {
 

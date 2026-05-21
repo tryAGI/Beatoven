@@ -62,5 +62,6 @@ namespace Beatoven
         public TaskStatusResponse()
         {
         }
+
     }
 }
