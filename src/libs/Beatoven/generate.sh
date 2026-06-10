@@ -9,3 +9,20 @@ autosdk generate openapi.yaml \
   --output Generated \
   --exclude-deprecated-operations \
   --security-scheme Http:Header:Bearer
+
+rm -rf ../../cli/Beatoven.CLI
+
+autosdk cli-project openapi.yaml \
+  --output ../../cli/Beatoven.CLI \
+  --sdk-project ../../libs/Beatoven/Beatoven.csproj \
+  --targetFramework net10.0 \
+  --namespace Beatoven \
+  --clientClassName BeatovenClient \
+  --package-id Beatoven.CLI \
+  --tool-command-name beatoven \
+  --user-secrets-id Beatoven.CLI \
+  --api-key-env-var BEATOVEN_API_KEY \
+  --base-url-env-var BEATOVEN_BASE_URL \
+  --cli-credential-file \
+  --exclude-deprecated-operations \
+  --security-scheme Http:Header:Bearer
