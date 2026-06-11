@@ -40,6 +40,13 @@ using Beatoven;
 using var client = new BeatovenClient(apiKey);
 ```
 
+### CLI
+
+```bash
+dotnet tool install --global Beatoven.CLI --prerelease
+beatoven api --help
+```
+
 <!-- EXAMPLES:START -->
 <!-- EXAMPLES:END -->
 
