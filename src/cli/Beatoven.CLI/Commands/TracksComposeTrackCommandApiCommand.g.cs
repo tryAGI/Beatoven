@@ -1,4 +1,5 @@
 #nullable enable
+#pragma warning disable CS0618
 
 using System.CommandLine;
 
@@ -22,18 +23,18 @@ internal static partial class TracksComposeTrackCommandApiCommand
     private static Option<bool?> Looping { get; } = CliRuntime.CreateNullableBoolOption(
         name: @"--looping",
         description: @"Set `true` for a higher amount of looping. Default `false`.");
-      private static Option<string?> Input { get; } = new("--input")
+      private static Option<string?> Input { get; } = new(@"--input")
       {
           Description = "Load request JSON from a file path, '-' for stdin, or an inline JSON object/array string.",
       };
 
-      private static Option<string?> RequestJson { get; } = new("--request-json")
+      private static Option<string?> RequestJson { get; } = new(@"--request-json")
       {
           Description = "Request body as JSON.",
           Hidden = true,
       };
 
-      private static Option<string?> RequestFile { get; } = new("--request-file")
+      private static Option<string?> RequestFile { get; } = new(@"--request-file")
       {
           Description = "Path to a JSON request file, or '-' for stdin.",
           Hidden = true,
@@ -80,7 +81,7 @@ until `status` becomes `composed`.
               var specifiedCount = (hasInput ? 1 : 0) + (hasRequestJson ? 1 : 0) + (hasRequestFile ? 1 : 0);
               if (specifiedCount > 1)
               {
-                  result.AddError("Specify at most one of --input, --request-json, or --request-file.");
+                  result.AddError(@"Specify at most one of --input, --request-json, or --request-file.");
               }
           });
 
@@ -95,8 +96,8 @@ until `status` becomes `composed`.
                             global::Beatoven.SourceGenerationContext.Default,
                             cancellationToken).ConfigureAwait(false);
                         var prompt = parseResult.GetRequiredValue(Prompt);
-                        var format = parseResult.GetValue(Format) ?? __requestBase?.Format;
-                        var looping = parseResult.GetValue(Looping) ?? __requestBase?.Looping;
+                        var format = CliRuntime.WasSpecified(parseResult, Format) ? parseResult.GetValue(Format) : __requestBase is not null ? __requestBase.Format : default;
+                        var looping = CliRuntime.WasSpecified(parseResult, Looping) ? parseResult.GetValue(Looping) : __requestBase is not null ? __requestBase.Looping : default;
                 using var client = await CliRuntime.CreateClientAsync(parseResult, cancellationToken).ConfigureAwait(false);
 
 
