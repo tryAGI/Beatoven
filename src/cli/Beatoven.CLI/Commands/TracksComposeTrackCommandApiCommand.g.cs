@@ -96,8 +96,8 @@ until `status` becomes `composed`.
                             global::Beatoven.SourceGenerationContext.Default,
                             cancellationToken).ConfigureAwait(false);
                         var prompt = parseResult.GetRequiredValue(Prompt);
-                        var format = CliRuntime.WasSpecified(parseResult, Format) ? parseResult.GetValue(Format) : __requestBase is not null ? __requestBase.Format : default;
-                        var looping = CliRuntime.WasSpecified(parseResult, Looping) ? parseResult.GetValue(Looping) : __requestBase is not null ? __requestBase.Looping : default;
+                        var format = CliRuntime.WasSpecified(parseResult, Format) ? parseResult.GetValue(Format) : (__requestBase is { } __FormatBaseValue ? __FormatBaseValue.Format : default);
+                        var looping = CliRuntime.WasSpecified(parseResult, Looping) ? parseResult.GetValue(Looping) : (__requestBase is { } __LoopingBaseValue ? __LoopingBaseValue.Looping : default);
                 using var client = await CliRuntime.CreateClientAsync(parseResult, cancellationToken).ConfigureAwait(false);
 
 
