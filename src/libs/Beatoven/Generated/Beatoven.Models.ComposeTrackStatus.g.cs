@@ -9,7 +9,7 @@ namespace Beatoven
     public enum ComposeTrackStatus
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         Started,
     }

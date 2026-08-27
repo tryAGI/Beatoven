@@ -20,7 +20,7 @@ namespace Beatoven.JsonConverters
                     {
                         return global::Beatoven.ComposeTrackStatusExtensions.ToEnum(stringValue) ?? default;
                     }
-                    
+
                     break;
                 }
                 case global::System.Text.Json.JsonTokenType.Number:
