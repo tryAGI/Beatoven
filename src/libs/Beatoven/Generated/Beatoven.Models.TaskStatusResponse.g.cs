@@ -4,7 +4,7 @@
 namespace Beatoven
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public sealed partial class TaskStatusResponse
     {
