@@ -35,9 +35,9 @@ internal static partial class TasksGetTaskStatusCommandApiCommand
 
     static partial void CustomizeCommand(ref Command command);
 
-    public static Command Create()
+    public static Command Create(string? commandName = null)
     {
-        var command = new Command(@"get-task-status", @"Get composition task status
+        var command = new Command(commandName ?? @"get-task-status", @"Get composition task status
 Returns the current status of a composition task.
 When `status` is `composed`, the response includes download URLs
 for the full track and individual stems.

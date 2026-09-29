@@ -62,9 +62,9 @@ internal static partial class TracksComposeTrackCommandApiCommand
 
     static partial void CustomizeCommand(ref Command command);
 
-    public static Command Create()
+    public static Command Create(string? commandName = null)
     {
-        var command = new Command(@"compose-track", @"Compose a new AI music track
+        var command = new Command(commandName ?? @"compose-track", @"Compose a new AI music track
 Starts an asynchronous composition task from a natural-language prompt.
 Returns a task ID that can be polled via `GET /api/v1/tasks/{task_id}`
 until `status` becomes `composed`.
