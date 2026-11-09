@@ -18,7 +18,7 @@ namespace Beatoven.JsonConverters
                     var stringValue = reader.GetString();
                     if (stringValue != null)
                     {
-                        return global::Beatoven.ComposeTrackFormatExtensions.ToEnum(stringValue) ?? default;
+                        return global::Beatoven.ComposeTrackFormatExtensions.ToEnum(stringValue) ?? throw new global::System.Text.Json.JsonException($"Unknown value '{stringValue}' for global::Beatoven.ComposeTrackFormat.");
                     }
 
                     break;
