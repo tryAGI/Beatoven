@@ -13,5 +13,6 @@ rootCommand.Options.Add(CliOptions.OutputDirectory);
 rootCommand.Subcommands.Add(AuthCommand.Create());
 rootCommand.Subcommands.Add(TasksApiGroupCommand.Create());
 rootCommand.Subcommands.Add(TracksApiGroupCommand.Create());
+rootCommand.Subcommands.Add(CliCompletion.CreateCommand(rootCommand, @"beatoven"));
 
 return await rootCommand.Parse(args).InvokeAsync().ConfigureAwait(false);
